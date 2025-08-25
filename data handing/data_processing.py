@@ -69,7 +69,8 @@ def rotate_board(board: np.ndarray, n: int) -> np.ndarray:
     rotated = np.empty_like(board)
     rotated[0] = np.rot90(board[0], k=n)
     rotated[1] = np.rot90(board[1], k=n)
-    rotated[2] = board[2].copy()
+    # ko dung turn nưa
+    # rotated[2] = board[2].copy()
     return rotated
 
 def check_trung(board: np.ndarray, pos_label : tuple) -> bool:
@@ -109,7 +110,7 @@ def extract_state_unique_file(file_path):
     list_line = f.readlines()
     whoWin = len(list_line) % 2
     f.seek(0)
-    game_state = np.zeros((3,15,15))
+    game_state = np.zeros((2,15,15))
     cnt = -1
 
     if list_line[0].strip() !='8,8':
@@ -136,7 +137,13 @@ def extract_state_unique_file(file_path):
         # cập nhật dữ liệu
         game_state[turn][x, y] = 1
         turn = 1 - turn
-        game_state[2][...] = turn
+        # game_state[2][...] = turn
+
+        # xoay phe lai
+        tmp = game_state[0].copy()
+        game_state[0] = game_state[1]
+        game_state[1] = tmp
+
 
     # print(f" Processing {file_path} DONE!")
 
@@ -146,6 +153,7 @@ def extract_folder(folder_path):
     for file_path in list_file:
         extract_state_unique_file(folder_path + '//' + file_path)
     print(f"Processing {folder_path} DONE!")
+
 
 def kl_divergence_uniform(p: np.ndarray):
     """
@@ -215,5 +223,5 @@ torch.save(states_tensor,"tensor_data_rapfi.pt")
 torch.save(labels_tensor,"tensor_target_rapfi.pt")
 print("Saved!")
 
-print(hash(np.zeros((3,15,15)).tobytes()) in mp_state.keys())
+print(hash(np.zeros((2,15,15)).tobytes()) in mp_state.keys())
 

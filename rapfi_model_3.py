@@ -190,10 +190,10 @@ class MyModel(nn.Module):
         super().__init__()
 
         # Input: (B, 3, 15, 15)
-        self.extractDirFeatures = ExtractDirectionalFeatures(in_channels=3, mid_channels=256, out_channels=256, kernel_size=3, padding=1)
-        self.incrementalModel = IncrementalModel(in_channels=256)
-        self.dynamic = DynamicPointwise(in_ch=256,out_ch=128)
-        self.extractPolicy = ExtractPolicy(in_ch=128)
+        self.extractDirFeatures = ExtractDirectionalFeatures(in_channels=2, mid_channels=64, out_channels=64, kernel_size=3, padding=1)
+        self.incrementalModel = IncrementalModel(in_channels=64)
+        self.dynamic = DynamicPointwise(in_ch=64,out_ch=32)
+        self.extractPolicy = ExtractPolicy(in_ch=32)
 
     def forward(self, x):
         # x: (B, 3, 15, 15)
@@ -218,7 +218,7 @@ class MyModel(nn.Module):
             {"params": self.extractDirFeatures.parameters(), "lr": lr},
             {"params": self.incrementalModel.parameters(), "lr": lr},
             {"params": self.dynamic.parameters(), "lr": lr},
-            {"params": self.extractPolicy.parameters(), "lr": lr}  # phần policy nhẹ hơn
+            {"params": self.extractPolicy.parameters(), "lr": lr}  
         ],weight_decay=1e-4)
         
 
