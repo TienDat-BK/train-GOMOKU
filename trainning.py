@@ -1,7 +1,7 @@
 from Model import AlphaZero
 import torch.utils.data as dataLoader
 import torch
-from rapfi_model_3 import MyModel
+from rapfi_best import MyModel
 
 tensor_data = torch.load('tensor_data_rapfi.pt')
 tensor_target = torch.load('tensor_target_rapfi.pt')
