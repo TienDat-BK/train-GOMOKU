@@ -114,7 +114,6 @@ def extract_state_unique_file(file_path):
     cnt = 0
 
     if list_line[0].strip() !='8,8':
-        print('BỎ')
         return
 
     for line in list_line:
@@ -189,7 +188,14 @@ def change_to_onehot():
 list_state = []
 list_label = []
 
-extract_folder('dataTrain\\Freestyle15_1')
+if os.path.exists("dataTrain\\Freestyle15_1"):
+    path_1 = "dataTrain\\Freestyle15_1"
+    path_2 = "dataTrain\\Freestyle15_2"
+else:
+    path_1 = "/content/train-GOMOKU/dataTrain/Freestyle15_1"
+    path_2 = "/content/train-GOMOKU/dataTrain/Freestyle15_1"
+
+extract_folder(path_1)
 # extract_folder('dataTrain\\Freestyle15_2')
 
 # list_label = soft_max(list_label)
