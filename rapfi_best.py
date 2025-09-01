@@ -174,13 +174,13 @@ class MyModel(nn.Module):
 
         # Input x: (B, 2, 15, 15)
         self.extractDirFeatures = ExtractDirectionalFeatures(in_channels=2, mid_channels=32, out_channels=16, kernel_size=3, padding=1)
-        # self.incrementalModel = IncrementalModel(in_channels=16*4)
+        self.incrementalModel = IncrementalModel(in_channels=16*4)
         self.extractPolicy = ExtractPolicy_2(in_channels=16*4)
 
     def forward(self, x):
         # x: (B, 2, 15, 15)
         x = self.extractDirFeatures(x)   # (B, 64, 15, 15)
-        x = self.incrementalModel(x)      # (B, 64, 15, 15)
+        # x = self.incrementalModel(x)      # (B, 64, 15, 15)
         x = self.extractPolicy(x)         # (B, 1, 15, 15)
         x = x.view(x.size(0), -1)         # (B, 225) — chưa softmax
 
