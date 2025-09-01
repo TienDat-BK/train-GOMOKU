@@ -110,7 +110,7 @@ def extract_state_unique_file(file_path):
     list_line = f.readlines()
     whoWin = len(list_line) % 2
     f.seek(0)
-    game_state = np.zeros((2,15,15))
+    game_state = np.zeros((3,15,15))
     cnt = 0
 
     if list_line[0].strip() !='8,8':
@@ -138,12 +138,7 @@ def extract_state_unique_file(file_path):
         # cập nhật dữ liệu
         game_state[turn][x, y] = 1
         turn = 1 - turn
-        # game_state[2][...] = turn
-
-        # xoay phe lai
-        tmp = game_state[0].copy()
-        game_state[0] = game_state[1].copy()
-        game_state[1] = tmp.copy()
+        game_state[2][...] = turn
 
 
     # print(f" Processing {file_path} DONE!")
