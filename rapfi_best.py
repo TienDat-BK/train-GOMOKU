@@ -186,43 +186,43 @@ class MyModel(nn.Module):
 
         return x                        # logits output
 
-def train_model(self, dataloader):
-        # target_index: (B,) — chỉ số ô đúng (0~224)
-        loss_func = nn.CrossEntropyLoss()
-        self.train()
-        optimizer = torch.optim.Adam([
-            {"params": self.extractDirFeatures.parameters(), "lr": 0.002},
-            # {"params": self.incrementalModel.parameters(), "lr": 0.002},
-            {"params": self.extractPolicy.parameters(), "lr": 0.002, "weight_decay" : 1e-4},   # phần policy nhẹ hơn
-        ])
-        
-
-        cnt_mini_batch = 0
-
-        for epoch in range(4000):
-            print(f"Epoch {epoch} processing...")
-            for data_input, target_probs in dataloader:
-
-                optimizer.zero_grad()
-                logits = self.forward(data_input)           # (B, 225)
-                loss = loss_func(logits,target_probs)
-
-                # target: (B,)
-                if loss < 0.1:
-                    print(f"Early stop at epoch {epoch} with loss {loss.item():.4f}")
-                    torch.save(self.state_dict(), f"model_rapfi_save_best.pth")
-                    print(f"Model saved at epoch {epoch}")
-                    return
-                loss.backward()
-                optimizer.step()
-
-                cnt_mini_batch += 1
-                if cnt_mini_batch  == 10:
-                    print(f"mini-batch loss [{cnt_mini_batch}]: {loss.item():.4f}")
+    def train_model(self, dataloader):
+            # target_index: (B,) — chỉ số ô đúng (0~224)
+            loss_func = nn.CrossEntropyLoss()
+            self.train()
+            optimizer = torch.optim.Adam([
+                {"params": self.extractDirFeatures.parameters(), "lr": 0.002},
+                # {"params": self.incrementalModel.parameters(), "lr": 0.002},
+                {"params": self.extractPolicy.parameters(), "lr": 0.002, "weight_decay" : 1e-4},   # phần policy nhẹ hơn
+            ])
+            
 
             cnt_mini_batch = 0
-            if epoch % 1 == 0:
-                torch.save(self.state_dict(), f"model_rapfi_save_best.pth")
-                print(f"Model saved at epoch {epoch}")
-            
-        super().train(mode=False)
+
+            for epoch in range(4000):
+                print(f"Epoch {epoch} processing...")
+                for data_input, target_probs in dataloader:
+
+                    optimizer.zero_grad()
+                    logits = self.forward(data_input)           # (B, 225)
+                    loss = loss_func(logits,target_probs)
+
+                    # target: (B,)
+                    if loss < 0.1:
+                        print(f"Early stop at epoch {epoch} with loss {loss.item():.4f}")
+                        torch.save(self.state_dict(), f"model_rapfi_save_best.pth")
+                        print(f"Model saved at epoch {epoch}")
+                        return
+                    loss.backward()
+                    optimizer.step()
+
+                    cnt_mini_batch += 1
+                    if cnt_mini_batch  == 10:
+                        print(f"mini-batch loss [{cnt_mini_batch}]: {loss.item():.4f}")
+
+                cnt_mini_batch = 0
+                if epoch % 1 == 0:
+                    torch.save(self.state_dict(), f"model_rapfi_save_best.pth")
+                    print(f"Model saved at epoch {epoch}")
+                
+            super().train(mode=False)
