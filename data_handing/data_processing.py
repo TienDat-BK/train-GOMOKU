@@ -114,7 +114,8 @@ def extract_state_unique_file(file_path):
     cnt = 0
 
     if list_line[0].strip() !='8,8':
-        return
+        # return
+        pass
 
     for line in list_line:
         num_state+=1
@@ -129,7 +130,7 @@ def extract_state_unique_file(file_path):
         #xoay
         for i in range(1):
             # chi lay cac move cua WIN
-            if cnt % 2 == whoWin:
+            if 1 : # cnt % 2 == whoWin:
                 check_trung(rotate_board(game_state,i),rotate_label((x,y),i))
         #lật
         # for board_flip, pos_label in flip(game_state,(x,y)):
@@ -196,6 +197,8 @@ else:
     path_2 = "/content/train-GOMOKU/dataTrain/Freestyle15_1"
 
 extract_folder(path_1)
+extract_folder(path_2)
+
 # extract_folder('dataTrain\\Freestyle15_2')
 
 # list_label = soft_max(list_label)

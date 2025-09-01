@@ -180,7 +180,7 @@ class MyModel(nn.Module):
     def forward(self, x):
         # x: (B, 2, 15, 15)
         x = self.extractDirFeatures(x)   # (B, 64, 15, 15)
-        # x = self.incrementalModel(x)      # (B, 64, 15, 15)
+        x = self.incrementalModel(x)      # (B, 64, 15, 15)
         x = self.extractPolicy(x)         # (B, 1, 15, 15)
         x = x.view(x.size(0), -1)         # (B, 225) — chưa softmax
 
@@ -192,33 +192,36 @@ class MyModel(nn.Module):
             self.train()
             optimizer = torch.optim.Adam([
                 {"params": self.extractDirFeatures.parameters(), "lr": 0.002},
-                # {"params": self.incrementalModel.parameters(), "lr": 0.002},
-                {"params": self.extractPolicy.parameters(), "lr": 0.002, "weight_decay" : 1e-4},   # phần policy nhẹ hơn
+                {"params": self.incrementalModel.parameters(), "lr": 0.002},
+                {"params": self.extractPolicy.parameters(), "lr": 0.002, "weight_decay" : 1e-5},   # phần policy nhẹ hơn
             ])
             
 
             cnt_mini_batch = 0
 
             for epoch in range(4000):
+                list_loss = []
                 print(f"Epoch {epoch} processing...")
                 for data_input, target_probs in dataloader:
 
                     optimizer.zero_grad()
                     logits = self.forward(data_input)           # (B, 225)
                     loss = loss_func(logits,target_probs)
-
+                    list_loss.append(loss.item())
                     # target: (B,)
-                    if loss < 0.1:
-                        print(f"Early stop at epoch {epoch} with loss {loss.item():.4f}")
-                        torch.save(self.state_dict(), f"model_rapfi_save_best.pth")
-                        print(f"Model saved at epoch {epoch}")
-                        return
+                    
                     loss.backward()
                     optimizer.step()
 
                     cnt_mini_batch += 1
                     if cnt_mini_batch  == 10:
                         print(f"mini-batch loss [{cnt_mini_batch}]: {loss.item():.4f}")
+
+                if sum(list_loss) / len(list_loss) < 0.3 :
+                        print(f"Early stop at epoch {epoch} with loss {loss.item():.4f}")
+                        torch.save(self.state_dict(), f"model_rapfi_save_best.pth")
+                        print(f"Model saved at epoch {epoch}")
+                        return
 
                 cnt_mini_batch = 0
                 if epoch % 1 == 0:
