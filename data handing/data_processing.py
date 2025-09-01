@@ -111,7 +111,7 @@ def extract_state_unique_file(file_path):
     whoWin = len(list_line) % 2
     f.seek(0)
     game_state = np.zeros((2,15,15))
-    cnt = -1
+    cnt = 0
 
     if list_line[0].strip() !='8,8':
         print('BỎ')
@@ -129,7 +129,9 @@ def extract_state_unique_file(file_path):
 
         #xoay
         for i in range(1):
-            check_trung(rotate_board(game_state,i),rotate_label((x,y),i))
+            # chi lay cac move cua WIN
+            if cnt % 2 == whoWin:
+                check_trung(rotate_board(game_state,i),rotate_label((x,y),i))
         #lật
         # for board_flip, pos_label in flip(game_state,(x,y)):
         #     check_trung(board_flip,pos_label)
@@ -141,8 +143,8 @@ def extract_state_unique_file(file_path):
 
         # xoay phe lai
         tmp = game_state[0].copy()
-        game_state[0] = game_state[1]
-        game_state[1] = tmp
+        game_state[0] = game_state[1].copy()
+        game_state[1] = tmp.copy()
 
 
     # print(f" Processing {file_path} DONE!")
